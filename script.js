@@ -54,16 +54,26 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="heart-btn"><i class="fas fa-heart"></i> Reply</button>
         <button class="pin-btn">📌 Pin</button>
         <button class="delete-btn"><i class="fas fa-trash"></i></button>
-      </div>`;
+      </div>
+      <div class="replies-container" style="margin-top: 10px;"></div>
+      <div class="reply-input-container" style="display: none;">
+        <input type="text" class="reply-input" placeholder="Type a reply...">
+        <button class="send-reply-btn">Send Reply</button>
+      </div>
+    `;
     messagesContainer.prepend(card);
     addCardActions(card);
   }
 
   function addCardActions(card) {
+    // Toggle heart button for liking
     card.querySelector('.heart-btn').addEventListener('click', function () {
       this.classList.toggle('active');
+      const replyContainer = card.querySelector('.reply-input-container');
+      replyContainer.style.display = replyContainer.style.display === 'none' ? 'block' : 'none';
     });
 
+    // Pin a message
     card.querySelector('.pin-btn').addEventListener('click', function () {
       const isPinned = card.classList.toggle('pinned');
       const parent = card.parentElement;
@@ -76,9 +86,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Delete a message
     card.querySelector('.delete-btn').addEventListener('click', function () {
       card.style.opacity = '0.5';
       setTimeout(() => card.remove(), 400);
+    });
+
+    // Reply action
+    card.querySelector('.send-reply-btn').addEventListener('click', function () {
+      const replyInput = card.querySelector('.reply-input');
+      const replyText = replyInput.value.trim();
+
+      if (replyText === '') return;
+
+      // Create and append the reply as a message underneath the main message
+      const replyContainer = card.querySelector('.replies-container');
+      const replyMessage = document.createElement('div');
+      replyMessage.className = 'reply-message';
+      replyMessage.textContent = `Reply: ${escapeHTML(replyText)}`;
+      replyContainer.appendChild(replyMessage);
+
+      // Clear the reply input field
+      replyInput.value = '';
+      alert('Reply added!');
     });
   }
 
